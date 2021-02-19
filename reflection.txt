@@ -1,0 +1,66 @@
+File By: Mayank Sharma Student ID: 936970
+
+The system developed ---
+
+A simulation is to be developed that allows ship to arrive at the arriving zone.
+A pilot picks the ship and acquires tugs.
+The pilot then moves to the berth and unloads the ores and departs through the depart zone.
+
+Potential problems that could arise in the system ---
+
+1) The system can undergo deadlock in many cases according to my code:
+	when one pilot takes a ship and takes the ship that has been 		
+
+waiting on the arrival zone.
+
+a. Eg: 
+	Pilot 1 acquires ship [1]
+	Pilot 1 releases ship [1]
+	Ship [1] departs the departing zone.
+	Pilot 1 acquires ship [3]
+	Pilot 1 acquires tugs.
+
+However, pilot 0 is waiting on the tug resource already and the system goes in deadlock.
+
+2) The other way a deadlock can occur is when all the pilots are waiting for the tug resource when the size of the tugs is not more than the number of pilots.
+
+3) The non-deterministic nature of which tread wakes up and when it wakes up. Pilot 1 can wake up before pilot 0 and vice versa. There is no order in the system. Also, when a thread runs is also unpredictable.
+
+a. Eg: 
+	Ship [2] departs the departing zone.
+	Pilot 1 release the tugs.
+	Pilot 1 acquires ship [4]
+
+Here the consumer thread acted first before the pilot could release the tugs event thought the order has been set the other way.
+
+Analysis of my system ---
+
+1) Overview ---
+
+From my system it is clear that the solution works perfectly for a single pilot.
+
+However, when 2 pilots are used under default conditions, the code runs perfectly sometimes, and it does not the other time.
+
+When the code was run for 10 time under default conditions it ran perfectly 8/10.
+       
+However, when the code was re run again for 10 times under same default conditions, it ran 5/10 times perfectly.
+
+2) Design Considerations ---
+
+One of the design choices was to implement check shield function. Previously, it was implemented using an if statement to check if the shield flag was active or not however, it was difficult for the pilot to make it wait and notify it again. So, a while loop was used to make the pilot wait during the period of active shield.
+
+3) Varying parameters --- 
+
+When the parameters were varied for the time durations, they worked perfectly fine for one pilot. When the pilot was changed to 2 and the time duration was increased or decreased. They did not work for the first set but magically worked for the second set of runs. 
+
+The values were varied from 1 to 100000 for debris time and the 3-time lapses. 
+
+When the pilot no was increased to 3, the system did not work even changing other variables. The reason could be the binary flags were used instead of semaphores to handle the resources.
+
+
+
+
+
+	
+
+		
